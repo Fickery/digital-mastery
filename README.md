@@ -2,6 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Prerequisites
+`Before you begin, ensure you have the following installed on your system`
+
+Node.js: You can download and install Node.js from https://node.js.org/en/download/.
+PostgreSQL: Follow the installation instructions for your operating system to install PostgreSQL.
+
 First, run the development server:
 
 ```bash
@@ -34,3 +40,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Database
+
+This project utilizes Supabase for hosting the PostgreSQL database and Prisma as an object-relational mapper (ORM) for managing database interactions.
