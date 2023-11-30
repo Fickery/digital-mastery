@@ -62,10 +62,6 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          // Additional checks or validations
-          // ...
-
-          // Continue with your custom endpoint logic
           const res = await fetch("/your/endpoint", {
             method: "POST",
             body: JSON.stringify(credentials),
@@ -78,11 +74,9 @@ export const authOptions: NextAuthOptions = {
             return user;
           }
 
-          // Handle other scenarios or errors
           console.error("Authentication failed:", res.statusText);
           return null;
         } catch (error) {
-          // Handle unexpected errors
           console.error("Error during authentication:", error);
           return null;
         }
