@@ -3,6 +3,7 @@ import Login from "@/components/form/loginForm";
 import Register from "@/components/form/registerForm";
 import { SecondaryButton } from "@/components/ui/secondaryButton";
 import { useState } from "react";
+import "./globals.css";
 import "../styles/film-grain.css";
 
 export default function Home() {

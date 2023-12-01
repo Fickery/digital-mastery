@@ -20,7 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={robotoCondensed.className}>
       <body>{children}</body>
-      <Toaster />
     </html>
   );
 }
