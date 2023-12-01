@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Roboto_Condensed, Urbanist } from "next/font/google";
 import "./globals.css";
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={robotoCondensed.className}>
       <body>{children}</body>
+      <Toaster />
     </html>
   );
 }

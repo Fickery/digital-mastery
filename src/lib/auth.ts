@@ -9,11 +9,12 @@ import { db } from "./db";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
+  secret: process.env.NEXTAUTH_URL_SECRET,
   session: {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/page",
+    signIn: "/",
   },
   providers: [
     GoogleProvider({
@@ -35,54 +36,59 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          // Check if credentials contain required fields
-          if (!credentials?.username || !credentials?.password) {
-            return null;
-          }
-
-          // Query the database to find the user
-          const existingUser = await db.user.findUnique({
-            where: { username: credentials?.username },
-          });
-
-          // Check if the user exists
-          if (!existingUser) {
-            return null;
-          }
-
-          // Compare the passwords
-          const passwordMatch = await compare(
-            credentials.password,
-            existingUser.password,
-          );
-
-          // Check if passwords match
-          if (!passwordMatch) {
-            return null;
-          }
-
-          const res = await fetch("/your/endpoint", {
-            method: "POST",
-            body: JSON.stringify(credentials),
-            headers: { "Content-Type": "application/json" },
-          });
-          const user = await res.json();
-
-          // Check if the response is OK and user is received
-          if (res.ok && user) {
-            return user;
-          }
-
-          console.error("Authentication failed:", res.statusText);
-          return null;
-        } catch (error) {
-          console.error("Error during authentication:", error);
+        // Check if credentials contain required fields
+        if (!credentials?.username || !credentials?.password) {
           return null;
         }
+
+        // Query the database to find the user
+        const existingUser = await db.user.findUnique({
+          where: { username: credentials?.username },
+        });
+
+        // Check if the user exists
+        if (!existingUser) {
+          return null;
+        }
+
+        // Compare the passwords
+        const passwordMatch = await compare(
+          credentials.password,
+          existingUser.password,
+        );
+
+        // Check if passwords match
+        if (!passwordMatch) {
+          return null;
+        }
+
+        return {
+          id: `${existingUser.id}`,
+          username: existingUser.username,
+        };
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user?.id) {
+        return {
+          ...token,
+          username: user.username,
+        };
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          username: token.username,
+        },
+      };
+    },
+  },
 };
 
 // import { NextAuthOptions } from "next-auth";
