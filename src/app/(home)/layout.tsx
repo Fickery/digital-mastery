@@ -1,9 +1,10 @@
 import Navbar from "@/components/ui/navbar";
 import AuthProvider from "@/context/AuthProvider";
-import { Roboto_Condensed } from "next/font/google";
+import { Roboto_Condensed, Urbanist } from "next/font/google";
 import "../globals.css";
 
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"] });
+const urbanist = Urbanist({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -12,12 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={robotoCondensed.className}>
-      <body>
+      <body className="h-screen">
         <AuthProvider>
-          <div>
-            <Navbar />
-            {children}
-          </div>
+          <Navbar />
+          <main>{children}</main>
         </AuthProvider>
       </body>
     </html>

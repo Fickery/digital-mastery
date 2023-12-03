@@ -65,6 +65,7 @@ export default function Register({ setMode }: SetMode) {
 
   return (
     <>
+      <p className="text-shadow-white pb-4 uppercase">create your account</p>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

@@ -54,7 +54,7 @@ export default function Login() {
 
   return (
     <div>
-      <p className="text-shadow-white">USERNAME LOGIN</p>
+      <p className="text-shadow-white pb-4">WELCOME BACK</p>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
