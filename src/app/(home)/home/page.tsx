@@ -14,7 +14,7 @@ export default async function page() {
     "Endless Scroll",
     "Type Grind",
     "Point And Click",
-    "Catcha Repeater",
+    "Captcha Repeater",
     "Endless Loading",
   ];
 
@@ -24,9 +24,9 @@ export default async function page() {
         <div className="overlay">
           <div className="flex h-screen w-full text-white">
             {task.map((t) => (
-              <div className="font-urbanist delay-[10ms] flex w-full items-center justify-evenly opacity-70 transition-all ease-in-out hover:bg-neutral-900 hover:bg-opacity-40 hover:opacity-100">
+              <div className="delay-&lsqb;10ms&rsqb flex w-full items-center justify-evenly font-urbanist opacity-70 transition-all ease-in-out hover:bg-neutral-900 hover:bg-opacity-40 hover:opacity-100">
                 <div>
-                  <Link href="/" key={t}>
+                  <Link href={`${t.toLowerCase().replace(/\s+/g, "-")}`}>
                     {t}
                   </Link>
                 </div>
@@ -42,5 +42,9 @@ export default async function page() {
       </div>
     );
   }
-  return <h2>Login to see page</h2>;
+  return <h2 className="text-white">Login to see page</h2>;
+}
+
+function formatTaskName(task: string) {
+  return task.replace(/\s+/g, "-").toLowerCase();
 }

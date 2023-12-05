@@ -16,9 +16,12 @@ export default async function Navbar() {
       <Link href="/home" className="text-xl font-bold">
         DIGITAL MASTERY
       </Link>
+
       <div>
         <DropdownMenu>
-          <DropdownMenuTrigger>{session?.user.username}</DropdownMenuTrigger>
+          <DropdownMenuTrigger>
+            {session?.user.username} {session?.user.name}
+          </DropdownMenuTrigger>
           <DropdownMenuContent>
             <SignOutBtn />
           </DropdownMenuContent>

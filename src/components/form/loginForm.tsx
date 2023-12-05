@@ -52,6 +52,26 @@ export default function Login() {
     }
   };
 
+  const handleExternalSignIn = async (provider: string) => {
+    try {
+      const signInData = await signIn(provider, {
+        redirect: false,
+      });
+
+      if (signInData?.error) {
+        toast({
+          title: "Error",
+          description: signInData.error,
+          variant: "destructive",
+        });
+      } else {
+        // Optionally, you can redirect or perform additional actions
+        router.push("/home");
+      }
+    } catch (error) {
+      console.error("External sign-in error:", error);
+    }
+  };
   return (
     <div>
       <p className="text-shadow-white pb-4">WELCOME BACK</p>
@@ -96,9 +116,9 @@ export default function Login() {
         </form>
       </Form>
       <div className="flex cursor-pointer flex-col gap-2 font-light">
-        <p>GOOGLE</p>
-        <p>FACEBOOK</p>
-        <p>GITHUB</p>
+        <p onClick={() => handleExternalSignIn("google")}>GOOGLE</p>
+        <p onClick={() => handleExternalSignIn("facebook")}>FACEBOOK</p>
+        <p onClick={() => handleExternalSignIn("github")}>GITHUB</p>
       </div>
     </div>
   );

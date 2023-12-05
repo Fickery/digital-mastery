@@ -10,7 +10,7 @@ export default function HeroText({ mode, setMode }: heroProps) {
   return (
     <>
       <div className="flex flex-col items-center uppercase">
-        <p className="text-[15.5rem] font-black leading-none text-primary">
+        <p className="text-[13vw] font-black leading-none text-primary">
           DIGITAL MASTERY
         </p>
         <div className="w-7/12">
