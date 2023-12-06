@@ -1,5 +1,9 @@
-import React from "react";
+import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {
-  return <div>page</div>;
+  return (
+    <>
+      <PageCtrl />
+    </>
+  );
 }

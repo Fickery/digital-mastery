@@ -1,16 +1,21 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import ReactPlayer from "react-player";
 
 interface VideoPlayerProps {
   videoUrl?: string;
-  onVideoEnd?: () => void;
 }
 
-const VideoPlayer = ({ videoUrl, onVideoEnd }: VideoPlayerProps) => {
+const VideoPlayer = () => {
   const playerRef = useRef<ReactPlayer | null>(null);
   const [duration, setDuration] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isEnded, setIsEnded] = useState<boolean>(false);
+
+  const videoEnded = () => {
+    setIsEnded(true);
+    alert("Video has ended");
+  };
 
   const handleDuration = (d: number) => {
     setDuration(d);
@@ -19,20 +24,6 @@ const VideoPlayer = ({ videoUrl, onVideoEnd }: VideoPlayerProps) => {
   const handleProgress = (progress: { playedSeconds: number }) => {
     setCurrentTime(progress.playedSeconds);
   };
-
-  //   useEffect(() => {
-  //     const player = playerRef.current;
-
-  //     if (player) {
-  //       player.on("ended", onVideoEnd);
-  //     }
-
-  //     return () => {
-  //       if (player) {
-  //         player.off("ended", onVideoEnd);
-  //       }
-  //     };
-  //   }, [videoUrl, onVideoEnd]);
 
   const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600);
@@ -43,26 +34,36 @@ const VideoPlayer = ({ videoUrl, onVideoEnd }: VideoPlayerProps) => {
     const formattedMinutes = minutes.toString().padStart(2, "0");
     const formattedSeconds = seconds.toString().padStart(2, "0");
 
-    return `${formattedHours} : ${formattedMinutes} : ${formattedSeconds}`;
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center">
-      <div className="m-5 h-fit w-1/2">
-        <ReactPlayer
-          ref={playerRef}
-          //   url={videoUrl}
-          url="https://www.youtube.com/watch?v=VPpTGtbhsqI"
-          width="100%"
-          height="100%"
-          onDuration={handleDuration}
-        />
-        <div className="flex flex-col items-center justify-center font-urbanist font-semibold text-white">
-          <p className="justify-center">{formatTime(duration - currentTime)}</p>{" "}
-          <p>Remaining</p>
+    <>
+      <div className="flex w-full flex-col items-center justify-center">
+        <div className="relative h-[28rem] w-[50rem] bg-black">
+          <ReactPlayer
+            ref={playerRef}
+            title=""
+            className="absolute left-0 top-0"
+            url=""
+            width="100%"
+            height="100%"
+            onDuration={handleDuration}
+            onProgress={handleProgress}
+            onEnded={videoEnded}
+            controls={true}
+          />
+        </div>
+
+        <div className="flex flex-col items-center justify-center pt-6 font-urbanist font-medium text-white">
+          <p className="justify-center text-base">
+            {formatTime(duration - currentTime)}
+          </p>{" "}
+          <p className="text-sm">Remaining</p>
+          {/* <p>{isEnded ? "Video has ended" : "Video is still playing"}</p> */}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
