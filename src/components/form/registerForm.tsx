@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,67 +7,68 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SetMode } from "@/types/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import router from "next/router";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useToast } from "../ui/use-toast";
 
-const userSchema = z
-  .object({
-    username: z.string().min(1, "Username is required").max(20),
-    password: z
-      .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
+const registerSchema = z.object({
+  username: z.string().min(1, "Username is required").max(20),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string().min(1, "Confirm password is required"),
+});
 
-const SignUpForm = () => {
-  const router = useRouter();
-  const form = useForm<z.infer<typeof userSchema>>({
-    resolver: zodResolver(userSchema),
+export default function Register({ setMode }: SetMode) {
+  const { toast } = useToast();
+
+  const form = useForm({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       password: "",
       confirmPassword: "",
     },
   });
-};
 
-const onSubmit = async (values: z.infer<typeof userSchema>) => {
-  try {
-    const response = await fetch("/api/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: values.username,
-        password: values.password,
-      }),
-    });
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+    try {
+      const response = await fetch("/api/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+          confirmPassword: values.confirmPassword,
+        }),
+      });
 
-    if (response.ok) {
-      router.push("/sign-in");
-    } else {
-      console.log("Registration failed");
+      if (response.ok) {
+        console.log("Registration successful");
+        setMode("login");
+      }
+      toast({
+        title: "Error: Username already exists",
+        description: "Please choose a different username",
+        variant: "destructive",
+      });
+    } catch (error) {
+      alert("Error during form submission");
+      console.error("Error during form submission:", error);
     }
-  } catch (error) {
-    console.error("Error during form submission:", error);
-  }
-};
+  };
 
-const SignInForm = () => {
-  <>
+  return (
     <>
+      <p className="text-shadow-white pb-4 uppercase">create your account</p>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleSubmit)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-2 [&>*:nth-child(4)]:mt-8"
         >
           <FormField
@@ -124,7 +124,5 @@ const SignInForm = () => {
         </form>
       </Form>
     </>
-  </>;
-};
-
-export default SignInForm;
+  );
+}
