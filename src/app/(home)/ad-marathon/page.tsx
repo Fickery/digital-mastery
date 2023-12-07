@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <PageCtrl />
-      <VideoPlayer />
+      {/* <VideoPlayer /> */}
     </>
   );
 }
