@@ -5,14 +5,27 @@ export default function EndlessScroll() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
 
+  //time
+  const totalDuration = 10 * 600; // 10 minutes in seconds
+
+  const remainingTime = totalDuration - elapsedTime;
+  const seconds = remainingTime % 60;
+  const minutes = Math.floor(remainingTime / 60) % 60;
+  const hours = Math.floor(remainingTime / 3600);
+
+  const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+    minutes,
+  ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
   useEffect(() => {
-    const scrollInterval = setInterval(() => {
-      if (isScrolling) {
-        setElapsedTime((elapsedTime) => elapsedTime + 1);
+    setInterval(() => {
+      if (elapsedTime < totalDuration) {
+        setElapsedTime((prevElapsedTime) => {
+          const newElapsedTime = prevElapsedTime + 1;
+          return newElapsedTime;
+        });
       }
     }, 1000);
-
-    return () => clearInterval(scrollInterval);
   }, [isScrolling, elapsedTime]);
 
   const handleScroll = () => {
@@ -25,7 +38,6 @@ export default function EndlessScroll() {
 
   const handleScrollArea = (e) => {
     if (isScrolling) {
-      // Calculate the scroll percentage based on scroll position
       const scrollPercentage =
         (e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)) *
         100;
@@ -40,23 +52,19 @@ export default function EndlessScroll() {
   return (
     <>
       <div className="w-full px-[325px] font-urbanist font-bold text-white">
-        <div className="mx-auto h-[28rem] w-[50rem] border-[0.5px] border-[#828282] bg-background text-center">
-          <div className="relative h-2 bg-foreground">
-            <div
-              className="absolute right-0 bg-primary"
-              style={{ width: `${progPercent}%` }}
-            ></div>
-          </div>
+        <div className="relative mx-auto h-[28rem] w-[50rem] border-[0.5px] border-[#828282] bg-background text-center">
           <div
-            className="scroll-area"
+            className="absolute left-0 top-0 flex h-full w-full items-center justify-center"
             onMouseDown={handleScroll}
             onMouseUp={handleStopScroll}
             onMouseLeave={handleStopScroll}
             onScroll={handleScrollArea} // Added onScroll event handler
-          ></div>
+          >
+            <p>Scroll here</p>
+          </div>
         </div>
         <p className="flex justify-center pt-8 font-urbanist font-medium">
-          You have scrolled {Math.floor(elapsedTime / 60)} minutes
+          You have scrolled {formattedTime} minutes
         </p>
       </div>
     </>

@@ -3,12 +3,19 @@ import React, { useState, useEffect } from "react";
 import { MoonLoader } from "react-spinners";
 
 const LoadingComponent = () => {
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
+  const storedElapsedTime =
+    parseInt(localStorage.getItem("elapsedTime") ?? "") || 0;
+  const [elapsedTime, setElapsedTime] = useState(storedElapsedTime);
+  const [hasStarted, setHasStarted] = useState(storedElapsedTime > 0);
   const [isActive, setIsActive] = useState(true);
 
   // time
   const totalDuration = 30 * 60; // 30 minutes in seconds
+
+  const saveElapsedTimeToLocalStorage = () => {
+    localStorage.setItem("elapsedTime", elapsedTime.toString());
+  };
+
   const remainingTime = totalDuration - elapsedTime;
 
   const seconds = remainingTime % 60;
@@ -30,7 +37,11 @@ const LoadingComponent = () => {
 
     const timeUpdate = setInterval(() => {
       if (hasStarted && isActive && elapsedTime < totalDuration) {
-        setElapsedTime((elapsedTime) => elapsedTime + 1);
+        setElapsedTime((prevElapsedTime) => {
+          const newElapsedTime = prevElapsedTime + 1;
+          saveElapsedTimeToLocalStorage();
+          return newElapsedTime;
+        });
       }
     }, 1000);
 
@@ -41,6 +52,13 @@ const LoadingComponent = () => {
       clearInterval(timeUpdate);
     };
   }, [elapsedTime, hasStarted, isActive, totalDuration]);
+
+  useEffect(() => {
+    // Clear the stored elapsed time when the component unmounts
+    return () => {
+      localStorage.removeItem("elapsedTime");
+    };
+  }, []);
 
   // if (hasStarted && !isActive) {
   //   alert("Please stay on this page and avoid switching tabs.");
@@ -70,9 +88,15 @@ const LoadingComponent = () => {
           </>
         )}
       </div>
-      <p className="flex justify-center pt-8 font-urbanist font-medium">
-        {formattedTime} remaining
-      </p>
+      {hasStarted ? (
+        <p className="flex justify-center pt-8 font-urbanist font-medium">
+          {formattedTime} remaining
+        </p>
+      ) : (
+        <p className="flex justify-center pt-8 font-urbanist font-medium">
+          Press START to begin
+        </p>
+      )}
     </div>
   );
 };
