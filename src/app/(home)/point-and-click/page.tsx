@@ -3,9 +3,11 @@ import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {
   return (
-    <>
-      <PageCtrl />
-      <PointAndClickGame />
-    </>
+    <div>
+      <div className="flex h-screen flex-col items-center justify-evenly">
+        <PageCtrl />
+        <PointAndClickGame />
+      </div>
+    </div>
   );
 }

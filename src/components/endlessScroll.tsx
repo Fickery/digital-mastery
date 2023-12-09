@@ -1,72 +1,57 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import "./EndlessScroll.css";
 
 export default function EndlessScroll() {
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
-
-  //time
-  const totalDuration = 10 * 600; // 10 minutes in seconds
-
-  const remainingTime = totalDuration - elapsedTime;
-  const seconds = remainingTime % 60;
-  const minutes = Math.floor(remainingTime / 60) % 60;
-  const hours = Math.floor(remainingTime / 3600);
-
-  const formattedTime = `${String(hours).padStart(2, "0")}:${String(
-    minutes,
-  ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  const [scrollPercentage, setScrollPercentage] = useState(0);
 
   useEffect(() => {
-    setInterval(() => {
-      if (elapsedTime < totalDuration) {
-        setElapsedTime((prevElapsedTime) => {
-          const newElapsedTime = prevElapsedTime + 1;
-          return newElapsedTime;
-        });
+    const handleScroll = () => {
+      const targetDiv = document.getElementById("target");
+
+      if (targetDiv) {
+        const scrollY = targetDiv.scrollTop;
+        const scrollHeight = targetDiv.scrollHeight;
+        const clientHeight = targetDiv.clientHeight;
+
+        const scrollPercentage =
+          (scrollY / (scrollHeight - clientHeight)) * 100;
+
+        setScrollPercentage(scrollPercentage);
       }
-    }, 1000);
-  }, [isScrolling, elapsedTime]);
+    };
 
-  const handleScroll = () => {
-    setIsScrolling(true);
-  };
+    const targetDiv = document.getElementById("target");
 
-  const handleStopScroll = () => {
-    setIsScrolling(false);
-  };
-
-  const handleScrollArea = (e) => {
-    if (isScrolling) {
-      const scrollPercentage =
-        (e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)) *
-        100;
-
-      // Update the elapsed time based on the scroll percentage
-      setElapsedTime(Math.floor((scrollPercentage / 100) * 600));
+    if (targetDiv) {
+      targetDiv.addEventListener("scroll", handleScroll);
     }
-  };
 
-  const progPercent = Math.min(elapsedTime / 600, 1) * 100;
+    return () => {
+      if (targetDiv) {
+        targetDiv.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   return (
-    <>
-      <div className="w-full px-[325px] font-urbanist font-bold text-white">
-        <div className="relative mx-auto h-[28rem] w-[50rem] border-[0.5px] border-[#828282] bg-background text-center">
-          <div
-            className="absolute left-0 top-0 flex h-full w-full items-center justify-center"
-            onMouseDown={handleScroll}
-            onMouseUp={handleStopScroll}
-            onMouseLeave={handleStopScroll}
-            onScroll={handleScrollArea} // Added onScroll event handler
-          >
-            <p>Scroll here</p>
+    <div className="flex w-full flex-col overflow-hidden px-[325px] font-urbanist font-bold text-white">
+      <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-around border-[0.5px] border-[#828282] bg-background">
+        <div id="target" className="custom-scrollbar">
+          <div className="z-50 flex h-[20000vh] w-screen justify-center p-4 font-urbanist font-medium">
+            <div className="fixed top-[55%] flex cursor-default items-center justify-center">
+              {scrollPercentage >= 0.1 ? (
+                <>Just keep scrolling!</>
+              ) : (
+                <>Scroll here to start!</>
+              )}
+            </div>
           </div>
         </div>
-        <p className="flex justify-center pt-8 font-urbanist font-medium">
-          You have scrolled {formattedTime} minutes
-        </p>
       </div>
-    </>
+      <p className="flex justify-center pt-8 font-urbanist font-medium uppercase">
+        Scroll Percentage - [{scrollPercentage.toFixed(2)}%]
+      </p>
+    </div>
   );
 }

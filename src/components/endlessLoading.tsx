@@ -66,7 +66,7 @@ const LoadingComponent = () => {
 
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
-      <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background text-center">
+      <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background">
         {hasStarted && elapsedTime >= totalDuration ? (
           <h1>Loading complete!</h1>
         ) : (

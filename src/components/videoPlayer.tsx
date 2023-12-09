@@ -38,32 +38,27 @@ const VideoPlayer = () => {
   };
 
   return (
-    <>
-      <div className="flex w-full flex-col items-center justify-center">
-        <div className="relative h-[28rem] w-[50rem] bg-black">
-          <ReactPlayer
-            ref={playerRef}
-            title=""
-            className="absolute left-0 top-0"
-            url=""
-            width="100%"
-            height="100%"
-            onDuration={handleDuration}
-            onProgress={handleProgress}
-            onEnded={videoEnded}
-            controls={true}
-          />
-        </div>
-
-        <div className="flex flex-col items-center justify-center pt-6 font-urbanist font-medium text-white">
-          <p className="justify-center text-base">
-            {formatTime(duration - currentTime)}
-          </p>{" "}
-          <p className="text-sm">Remaining</p>
-          {/* <p>{isEnded ? "Video has ended" : "Video is still playing"}</p> */}
-        </div>
+    <div className="w-full px-[325px] font-urbanist font-bold text-white">
+      <div className="mx-auto h-[28rem] w-[50rem] border-[0.5px] border-[#828282] bg-background text-center">
+        <ReactPlayer
+          ref={playerRef}
+          title=""
+          // className="absolute left-0 top-0"
+          url=""
+          width="100%"
+          height="100%"
+          onDuration={handleDuration}
+          onProgress={handleProgress}
+          onEnded={videoEnded}
+          controls={true}
+        />
       </div>
-    </>
+
+      <p className="flex justify-center pt-8 font-urbanist font-medium uppercase">
+        {formatTime(duration - currentTime)} remaining
+      </p>
+      {/* <p>{isEnded ? "Video has ended" : "Video is still playing"}</p> */}
+    </div>
   );
 };
 

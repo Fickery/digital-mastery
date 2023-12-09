@@ -9,7 +9,7 @@ export default function Task() {
         {tasks.map(({ name, index }) => (
           <div
             key={index}
-            className="delay-[10ms] flex w-full items-center justify-evenly font-urbanist opacity-70 transition-all ease-in-out hover:bg-neutral-900 hover:bg-opacity-40 hover:opacity-100"
+            className="delay-&lsqb;10ms&rsqb flex w-full items-center justify-evenly font-urbanist opacity-70 transition-all ease-in-out hover:bg-neutral-900 hover:bg-opacity-40 hover:opacity-100"
           >
             <div>
               <Link href={getTaskRoute(name)}>{name}</Link>

@@ -47,7 +47,7 @@ export default function PageCtrl() {
   } else {
     return (
       <>
-        <div className="flex w-full justify-between px-8 pb-20 pt-20 font-urbanist text-white">
+        <div className="flex w-full justify-between px-8 font-urbanist text-white">
           <button onClick={navToBack} className="uppercase hover:underline">
             back
           </button>
