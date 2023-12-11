@@ -1,4 +1,4 @@
-import TypeGrind from "@/components/typeGrind";
+import TypeGrind from "@/components/pages/typeGrind";
 import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {

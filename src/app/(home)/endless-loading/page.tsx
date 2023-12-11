@@ -1,4 +1,4 @@
-import EndlessLoading from "@/components/endlessLoading";
+import EndlessLoading from "@/components/pages/endlessLoading";
 import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {
