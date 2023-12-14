@@ -1,4 +1,4 @@
-import PointAndClickGame from "@/components/pointAndClick";
+import PointAndClickGame from "@/components/pages/pointAndClick";
 import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {

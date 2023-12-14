@@ -1,4 +1,4 @@
-import CaptchaChallenge from "@/components/captchaRepeat";
+import CaptchaChallenge from "@/components/pages/captchaRepeat";
 import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {

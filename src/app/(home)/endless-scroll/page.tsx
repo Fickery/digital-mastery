@@ -1,4 +1,4 @@
-import EndlessScroll from "@/components/endlessScroll";
+import EndlessScroll from "@/components/pages/endlessScroll";
 import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {

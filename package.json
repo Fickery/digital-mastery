@@ -45,7 +45,6 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.3",
-    "html-loader": "^4.2.0",
     "i": "^0.3.7",
     "npm": "^10.2.5",
     "postcss": "^8",
