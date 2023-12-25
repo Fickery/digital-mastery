@@ -1,16 +1,13 @@
 "use client";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 const SignOutBtn = () => {
-  const router = useRouter();
-  const handleClick = () => {
-    signOut({
+  const handleClick = async () => {
+    await signOut({
       redirect: false,
-      callbackUrl: `/`,
     });
-    router.push("/");
+    window.location.href = "/";
   };
 
   return <DropdownMenuItem onClick={handleClick}>Sign out</DropdownMenuItem>;

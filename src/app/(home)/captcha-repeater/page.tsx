@@ -3,8 +3,8 @@ import PageCtrl from "@/components/ui/pageCtrl";
 
 export default function page() {
   return (
-    <div>
-      <div className="flex h-screen flex-col items-center justify-evenly">
+    <div className="h-screen">
+      <div className="flex h-full flex-col items-center justify-evenly">
         <PageCtrl />
         <CaptchaChallenge />
       </div>

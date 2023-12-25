@@ -1,48 +1,46 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 
-const CaptchaChallenge = () => {
-  const [attempts, setAttempts] = useState(0);
-  const [completed, setCompleted] = useState(false);
+const RecaptchaV2Page = () => {
+  const [counter, setCounter] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-  const handleCaptchaSuccess = () => {
-    setAttempts(attempts + 1);
-    if (attempts >= 25) {
-      setCompleted(true);
+  const onReCAPTCHAChange = (token: string | null) => {
+    if (token) {
+      const newCount = counter + 1;
+      setCounter(newCount);
+      if (newCount >= 25) {
+        setIsCompleted(true);
+      } else {
+        if (recaptchaRef.current) {
+          recaptchaRef.current.reset();
+        }
+      }
     }
   };
 
-  const handleCaptchaError = () => {
-    // You can implement logic to handle errors here, e.g., showing an error message or offering retry options.
-  };
-
-  if (completed) {
-    return (
-      <div>
-        <h1>Congratulations!</h1>
-        <p>You have successfully solved the CAPTCHA 25 times.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
-      <div className="mx-auto h-[28rem] w-[50rem] border-[0.5px] border-[#828282] bg-background text-center">
-        <div>
-          {/* <ReCAPTCHAv3
-          sitekey="YOUR_SITE_KEY"
-          action="verify"
-          size="compact"
-          onVerify={handleCaptchaSuccess}
-          onError={handleCaptchaError}
-        /> */}
-        </div>
+      <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-around border-[0.5px] border-[#828282] bg-background">
+        {isCompleted ? (
+          <div>Thank you for completing the challenges!</div>
+        ) : (
+          <div>
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey="6LfPODEpAAAAAO9t_90mJ7CY6l_zyHwlmtvoluEv"
+              onChange={onReCAPTCHAChange}
+            />
+          </div>
+        )}
       </div>
       <p className="flex justify-center pt-8 font-urbanist font-medium">
-        Attempts remaining: {25 - attempts}
+        Challenge {counter + 1} of 25
       </p>
     </div>
   );
 };
 
-export default CaptchaChallenge;
+export default RecaptchaV2Page;

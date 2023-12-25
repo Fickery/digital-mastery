@@ -40,17 +40,19 @@ export default function EndlessScroll() {
         <div id="target" className="custom-scrollbar">
           <div className="z-50 flex h-[20000vh] w-screen justify-center p-4 font-urbanist font-medium">
             <div className="fixed top-[55%] flex cursor-default items-center justify-center">
-              {scrollPercentage >= 0.1 ? (
+              {scrollPercentage >= 95 ? (
                 <>Just keep scrolling!</>
+              ) : scrollPercentage >= 50 ? (
+                <>Almost there!</>
               ) : (
-                <>Scroll here to start!</>
+                <>Scroll to start!</>
               )}
             </div>
           </div>
         </div>
       </div>
-      <p className="flex justify-center pt-8 font-urbanist font-medium uppercase">
-        Scroll Percentage - [{scrollPercentage.toFixed(2)}%]
+      <p className="flex justify-center pt-8 font-urbanist font-medium">
+        Scroll Percentage: {scrollPercentage.toFixed(2)}%
       </p>
     </div>
   );

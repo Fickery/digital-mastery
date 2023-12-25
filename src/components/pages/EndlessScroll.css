@@ -4,7 +4,6 @@
   scrollbar-color: transparent transparent;
 }
 
-/* Hide the default scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 12px; /* Set the scrollbar width to match your design */
 }
