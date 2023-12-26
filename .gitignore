@@ -6,6 +6,11 @@
 .pnp.js
 .yarn/install-state.gz
 
+# public
+/public
+*.mp4
+!videos/*.mp4
+
 # database
 /prisma
 
