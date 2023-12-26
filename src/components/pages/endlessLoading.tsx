@@ -1,19 +1,42 @@
 "use client";
 import { useEffect, useState } from "react";
 import { MoonLoader } from "react-spinners";
+import { Button } from "../ui/button";
 
 //*****-------------------------------------------------------------------------*****//
 
-const TOTAL_DURATION = 5;
+const TOTAL_DURATION = 3;
 
 const LoadingComponent = () => {
   const [elapsedTime, setElapsedTime] = useState(() => getInitialElapsedTime());
   const [hasStarted, setHasStarted] = useState(elapsedTime > 0);
   const [isActive, setIsActive] = useState(true);
-  const [timerFinished, setTimerFinished] = useState(false);
-  const [tasksCompleted, setTasksCompleted] = useState(0);
+  const [tasksCompleted, setTasksCompleted] = useState(false);
 
-  // Fetch initial elapsed time from local storage or default to 0
+  const resetCompletionDay = () => {
+    localStorage.removeItem("lastCompletedDate");
+    alert("Completion day reset. You can complete the task again.");
+  };
+
+  const canCompleteTask = () => {
+    const lastCompleted = localStorage.getItem("lastCompletedDate");
+    const today = new Date().toDateString();
+
+    return lastCompleted !== today;
+  };
+
+  const completeTask = () => {
+    if (canCompleteTask()) {
+      setTasksCompleted(true);
+      localStorage.setItem("taskCompleted", "true");
+      localStorage.setItem("taskCompleted-Ad Marathon", "true");
+      localStorage.setItem("lastCompletedDate", new Date().toDateString());
+      window.location.href = "home";
+    } else {
+      alert("Task can only be completed once per day.");
+    }
+  };
+
   function getInitialElapsedTime() {
     const storedTime = localStorage.getItem("elapsedTime");
     return storedTime ? parseInt(storedTime, 10) : 0;
@@ -29,6 +52,13 @@ const LoadingComponent = () => {
   }
 
   //*****-----------------------------------------------------------------------*****//
+
+  useEffect(() => {
+    const storedCompleted = localStorage.getItem("taskCompleted");
+    if (storedCompleted === "true") {
+      setTasksCompleted(true);
+    }
+  }, []);
 
   useEffect(() => {
     let intervalId: string | number | NodeJS.Timeout | undefined;
@@ -51,18 +81,6 @@ const LoadingComponent = () => {
     return () =>
       window.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
-
-  useEffect(() => {
-    if (elapsedTime >= TOTAL_DURATION) {
-      setTimerFinished(true);
-    }
-  }, [elapsedTime, setTimerFinished]);
-
-  useEffect(() => {
-    if (timerFinished) {
-      setTasksCompleted((prev) => prev + 1);
-    }
-  }, [timerFinished, setTasksCompleted]);
 
   // Clear local storage when component unmounts
   useEffect(() => {
@@ -101,15 +119,79 @@ const LoadingComponent = () => {
         )}
       </div>
       <p className="flex justify-center pt-8 font-urbanist font-medium">
-        {hasStarted
-          ? elapsedTime < TOTAL_DURATION
-            ? formattedTime + " remaining"
-            : "Done"
-          : "Press start to begin"}
+        {hasStarted ? (
+          elapsedTime < TOTAL_DURATION ? (
+            formattedTime + " remaining"
+          ) : (
+            <Button className="mx-auto flex" onClick={completeTask}>
+              Complete Task
+            </Button>
+          )
+        ) : (
+          "Press start to begin"
+        )}
       </p>
-      <p className="flex justify-center pt-5">{tasksCompleted}</p>
+      <Button className="mx-auto flex" onClick={resetCompletionDay}>
+        Dev Reset Day
+      </Button>
     </div>
   );
 };
 
 export default LoadingComponent;
+
+{
+  /* <button onClick={decompleteTask}>Reset Tasks Completed</button> */
+}
+{
+  /* <p className="flex justify-center pt-5">{tasksCompleted}</p> */
+}
+
+// const decompleteTask = () => {
+//   const newCount = tasksCompleted - 1;
+//   setTasksCompleted(newCount);
+//   // Save the new state to local storage
+//   localStorage.setItem("taskCompleted", newCount.toString());
+// };
+
+// const [timerFinished, setTimerFinished] = useState(false);
+
+// useEffect(() => {
+//   if (elapsedTime >= TOTAL_DURATION) {
+//     setTimerFinished(true);
+//   }
+// }, [elapsedTime, setTimerFinished]);
+
+// useEffect(() => {
+//   if (timerFinished) {
+//     setTasksCompleted((prev) => prev + 1);
+//   }
+// }, [timerFinished, setTasksCompleted]);
+
+{
+  /* <button onClick={decompleteTask}>Reset Tasks Completed</button> */
+}
+{
+  /* <p className="flex justify-center pt-5">{tasksCompleted}</p> */
+}
+
+// const decompleteTask = () => {
+//   const newCount = tasksCompleted - 1;
+//   setTasksCompleted(newCount);
+//   // Save the new state to local storage
+//   localStorage.setItem("taskCompleted", newCount.toString());
+// };
+
+// const [timerFinished, setTimerFinished] = useState(false);
+
+// useEffect(() => {
+//   if (elapsedTime >= TOTAL_DURATION) {
+//     setTimerFinished(true);
+//   }
+// }, [elapsedTime, setTimerFinished]);
+
+// useEffect(() => {
+//   if (timerFinished) {
+//     setTasksCompleted((prev) => prev + 1);
+//   }
+// }, [timerFinished, setTasksCompleted]);

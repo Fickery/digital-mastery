@@ -1,4 +1,9 @@
-export const tasks = [
+interface taskArr {
+  name: string;
+  index: number;
+}
+
+export const tasks: taskArr[] = [
   { name: "Ad Marathon", index: 1 },
   { name: "Endless Scroll", index: 2 },
   { name: "Type Grind", index: 3 },
