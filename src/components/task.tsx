@@ -9,7 +9,6 @@ type TaskCompletionStatus = {
 };
 
 export default function Task() {
-  // State to hold completion status for each task
   const [taskCompletionStatus, setTaskCompletionStatus] =
     useState<TaskCompletionStatus>({});
 
@@ -19,7 +18,6 @@ export default function Task() {
 
   const resetCompletedTasks = () => {
     const resetStatus = tasks.reduce<TaskCompletionStatus>((acc, task) => {
-      // Rename 'tasks' to 'task'
       acc[task.name] = false;
       localStorage.setItem(`taskCompleted-${task.name}`, "false");
       return acc;
@@ -30,7 +28,6 @@ export default function Task() {
   useEffect(() => {
     const storedCompletionStatus = tasks.reduce<TaskCompletionStatus>(
       (acc, task) => {
-        // Rename 'tasks' to 'task'
         const stored = localStorage.getItem(`taskCompleted-${task.name}`);
         acc[task.name] = stored === "true";
         return acc;
@@ -41,7 +38,6 @@ export default function Task() {
     setTaskCompletionStatus(storedCompletionStatus);
   }, []);
 
-  // Calculate total completed based on taskCompletionStatus
   const totalCompleted =
     Object.values(taskCompletionStatus).filter(Boolean).length;
 
@@ -54,7 +50,7 @@ export default function Task() {
             key={index}
             className={`flex w-full items-center justify-evenly font-urbanist transition-all ease-in-out ${
               isCompleted === true
-                ? "bg-neutral-900 bg-opacity-40 line-through opacity-100"
+                ? "pointer-events-none line-through opacity-25"
                 : "hover:bg-neutral-900 hover:bg-opacity-40 hover:opacity-100"
             }`}
           >
@@ -80,7 +76,3 @@ export default function Task() {
     </div>
   );
 }
-
-// className={`${
-//   isCompleted ? "pointer-events-none line-through" : ""
-// }`}

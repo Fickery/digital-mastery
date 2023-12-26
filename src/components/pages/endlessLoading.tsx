@@ -29,7 +29,7 @@ const LoadingComponent = () => {
     if (canCompleteTask()) {
       setTasksCompleted(true);
       localStorage.setItem("taskCompleted", "true");
-      localStorage.setItem("taskCompleted-Ad Marathon", "true");
+      localStorage.setItem("taskCompleted-Endless Loading", "true");
       localStorage.setItem("lastCompletedDate", new Date().toDateString());
       window.location.href = "home";
     } else {
@@ -50,6 +50,11 @@ const LoadingComponent = () => {
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
+
+  const remainingTime = TOTAL_DURATION - elapsedTime;
+  const formattedTime = formatTime(remainingTime);
+
+  const startTimer = () => setHasStarted(true);
 
   //*****-----------------------------------------------------------------------*****//
 
@@ -82,15 +87,9 @@ const LoadingComponent = () => {
       window.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
 
-  // Clear local storage when component unmounts
   useEffect(() => {
     return () => localStorage.removeItem("elapsedTime");
   }, []);
-
-  const remainingTime = TOTAL_DURATION - elapsedTime;
-  const formattedTime = formatTime(remainingTime);
-
-  const startTimer = () => setHasStarted(true);
 
   //*****-----------------------------------------------------------------------*****//
 
@@ -139,59 +138,3 @@ const LoadingComponent = () => {
 };
 
 export default LoadingComponent;
-
-{
-  /* <button onClick={decompleteTask}>Reset Tasks Completed</button> */
-}
-{
-  /* <p className="flex justify-center pt-5">{tasksCompleted}</p> */
-}
-
-// const decompleteTask = () => {
-//   const newCount = tasksCompleted - 1;
-//   setTasksCompleted(newCount);
-//   // Save the new state to local storage
-//   localStorage.setItem("taskCompleted", newCount.toString());
-// };
-
-// const [timerFinished, setTimerFinished] = useState(false);
-
-// useEffect(() => {
-//   if (elapsedTime >= TOTAL_DURATION) {
-//     setTimerFinished(true);
-//   }
-// }, [elapsedTime, setTimerFinished]);
-
-// useEffect(() => {
-//   if (timerFinished) {
-//     setTasksCompleted((prev) => prev + 1);
-//   }
-// }, [timerFinished, setTasksCompleted]);
-
-{
-  /* <button onClick={decompleteTask}>Reset Tasks Completed</button> */
-}
-{
-  /* <p className="flex justify-center pt-5">{tasksCompleted}</p> */
-}
-
-// const decompleteTask = () => {
-//   const newCount = tasksCompleted - 1;
-//   setTasksCompleted(newCount);
-//   // Save the new state to local storage
-//   localStorage.setItem("taskCompleted", newCount.toString());
-// };
-
-// const [timerFinished, setTimerFinished] = useState(false);
-
-// useEffect(() => {
-//   if (elapsedTime >= TOTAL_DURATION) {
-//     setTimerFinished(true);
-//   }
-// }, [elapsedTime, setTimerFinished]);
-
-// useEffect(() => {
-//   if (timerFinished) {
-//     setTasksCompleted((prev) => prev + 1);
-//   }
-// }, [timerFinished, setTasksCompleted]);
