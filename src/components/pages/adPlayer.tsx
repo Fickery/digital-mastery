@@ -1,6 +1,7 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import { Button } from "../ui/button";
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -11,6 +12,7 @@ const VideoPlayer = () => {
   const [duration, setDuration] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isEnded, setIsEnded] = useState<boolean>(false);
+  const [tasksCompleted, setTasksCompleted] = useState(false);
 
   const videoEnded = () => {
     setIsEnded(true);
@@ -37,6 +39,18 @@ const VideoPlayer = () => {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
 
+  const devCompleteTask = () => {
+    setTasksCompleted(true);
+    localStorage.setItem("taskCompleted", "true");
+    localStorage.setItem("taskCompleted-Ad Marathon", "true");
+    localStorage.setItem("lastCompletedDate", new Date().toDateString());
+    window.location.href = "home";
+  };
+
+  // useEffect(() => {
+
+  // })
+
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
       <div className="mx-auto h-[28rem] w-[50rem] border-[0.5px] border-[#828282] bg-background text-center">
@@ -57,6 +71,9 @@ const VideoPlayer = () => {
       <p className="flex justify-center pt-8 font-urbanist font-medium uppercase">
         {formatTime(duration - currentTime)} remaining
       </p>
+      <Button className="mx-auto flex" onClick={devCompleteTask}>
+        Dev complete task
+      </Button>
       {/* <p>{isEnded ? "Video has ended" : "Video is still playing"}</p> */}
     </div>
   );

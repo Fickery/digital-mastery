@@ -1,73 +1,102 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MoonLoader } from "react-spinners";
+import { Button } from "../ui/button";
+
+//*****-------------------------------------------------------------------------*****//
+
+const TOTAL_DURATION = 3;
 
 const LoadingComponent = () => {
-  const storedElapsedTime =
-    parseInt(localStorage.getItem("elapsedTime") ?? "") || 0;
-  const [elapsedTime, setElapsedTime] = useState(storedElapsedTime);
-  const [hasStarted, setHasStarted] = useState(storedElapsedTime > 0);
+  const [elapsedTime, setElapsedTime] = useState(() => getInitialElapsedTime());
+  const [hasStarted, setHasStarted] = useState(elapsedTime > 0);
   const [isActive, setIsActive] = useState(true);
+  const [tasksCompleted, setTasksCompleted] = useState(false);
 
-  // time
-  const totalDuration = 30 * 60; // 30 minutes in seconds
-
-  const saveElapsedTimeToLocalStorage = () => {
-    localStorage.setItem("elapsedTime", elapsedTime.toString());
+  const resetCompletionDay = () => {
+    localStorage.removeItem("lastCompletedDate");
+    alert("Completion day reset. You can complete the task again.");
   };
 
-  const remainingTime = totalDuration - elapsedTime;
+  const canCompleteTask = () => {
+    const lastCompleted = localStorage.getItem("lastCompletedDate");
+    const today = new Date().toDateString();
 
-  const seconds = remainingTime % 60;
-  const minutes = Math.floor(remainingTime / 60) % 60;
-  const hours = Math.floor(remainingTime / 3600);
+    return lastCompleted !== today;
+  };
 
-  const formattedTime = `${String(hours).padStart(2, "0")}:${String(
-    minutes,
-  ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  const completeTask = () => {
+    if (canCompleteTask()) {
+      setTasksCompleted(true);
+      localStorage.setItem("taskCompleted", "true");
+      localStorage.setItem("taskCompleted-Endless Loading", "true");
+      localStorage.setItem("lastCompletedDate", new Date().toDateString());
+      window.location.href = "home";
+    } else {
+      alert("Task can only be completed once per day.");
+    }
+  };
+
+  function getInitialElapsedTime() {
+    const storedTime = localStorage.getItem("elapsedTime");
+    return storedTime ? parseInt(storedTime, 10) : 0;
+  }
+
+  function formatTime(timeInSeconds: number) {
+    const seconds = timeInSeconds % 60;
+    const minutes = Math.floor(timeInSeconds / 60) % 60;
+    const hours = Math.floor(timeInSeconds / 3600);
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  const remainingTime = TOTAL_DURATION - elapsedTime;
+  const formattedTime = formatTime(remainingTime);
+
+  const startTimer = () => setHasStarted(true);
+
+  //*****-----------------------------------------------------------------------*****//
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setIsActive(false);
-      } else {
-        setIsActive(true);
-      }
-    };
-
-    const timeUpdate = setInterval(() => {
-      if (hasStarted && isActive && elapsedTime < totalDuration) {
-        setElapsedTime((prevElapsedTime) => {
-          const newElapsedTime = prevElapsedTime + 1;
-          saveElapsedTimeToLocalStorage();
-          return newElapsedTime;
-        });
-      }
-    }, 1000);
-
-    window.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener("visibilitychange", handleVisibilityChange);
-      clearInterval(timeUpdate);
-    };
-  }, [elapsedTime, hasStarted, isActive, totalDuration]);
-
-  useEffect(() => {
-    // Clear the stored elapsed time when the component unmounts
-    return () => {
-      localStorage.removeItem("elapsedTime");
-    };
+    const storedCompleted = localStorage.getItem("taskCompleted");
+    if (storedCompleted === "true") {
+      setTasksCompleted(true);
+    }
   }, []);
 
-  // if (hasStarted && !isActive) {
-  //   alert("Please stay on this page and avoid switching tabs.");
-  // }
+  useEffect(() => {
+    let intervalId: string | number | NodeJS.Timeout | undefined;
+
+    if (hasStarted && isActive && elapsedTime < TOTAL_DURATION) {
+      intervalId = setInterval(() => {
+        setElapsedTime((prevTime) => {
+          const newTime = prevTime + 1;
+          localStorage.setItem("elapsedTime", newTime.toString());
+          return newTime;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [hasStarted, isActive, elapsedTime]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => setIsActive(!document.hidden);
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
+  useEffect(() => {
+    return () => localStorage.removeItem("elapsedTime");
+  }, []);
+
+  //*****-----------------------------------------------------------------------*****//
 
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
       <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background">
-        {hasStarted && elapsedTime >= totalDuration ? (
+        {hasStarted && elapsedTime >= TOTAL_DURATION ? (
           <h1>Loading complete!</h1>
         ) : (
           <>
@@ -83,20 +112,27 @@ const LoadingComponent = () => {
                 </p>
               </>
             ) : (
-              <button onClick={() => setHasStarted(true)}>START</button>
+              <button onClick={startTimer}>START</button>
             )}
           </>
         )}
       </div>
-      {hasStarted ? (
-        <p className="flex justify-center pt-8 font-urbanist font-medium">
-          {formattedTime} remaining
-        </p>
-      ) : (
-        <p className="flex justify-center pt-8 font-urbanist font-medium">
-          Press START to begin
-        </p>
-      )}
+      <p className="flex justify-center pt-8 font-urbanist font-medium">
+        {hasStarted ? (
+          elapsedTime < TOTAL_DURATION ? (
+            formattedTime + " remaining"
+          ) : (
+            <Button className="mx-auto flex" onClick={completeTask}>
+              Complete Task
+            </Button>
+          )
+        ) : (
+          "Press start to begin"
+        )}
+      </p>
+      <Button className="mx-auto flex" onClick={resetCompletionDay}>
+        Dev Reset Day
+      </Button>
     </div>
   );
 };
