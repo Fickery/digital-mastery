@@ -9,7 +9,9 @@ export default function TypeGrind() {
   const [text, setText] = useState("");
   const [words, setWords] = useState("");
   const [progress, setProgress] = useState(0);
-  const [completed, setCompleted] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [tasksCompleted, setTasksCompleted] = useState(false);
+
   const inputRef = useRef(null);
 
   const genRandomWords = () => {
@@ -22,21 +24,31 @@ export default function TypeGrind() {
     genRandomWords();
     setHasStarted(true);
     setProgress(0);
-    setCompleted(false);
+    setIsCompleted(false);
   };
 
   const nextSentence = () => {
     if (text.trim() === words) {
       genRandomWords();
       setProgress((prevProg) => {
-        if (prevProg === 24) {
-          setCompleted(true);
+        if (prevProg === 1) {
+          setIsCompleted(true);
           return prevProg;
         }
         return prevProg + 1;
       });
     }
   };
+
+  useEffect(() => {
+    if (isCompleted) {
+      setTasksCompleted(true);
+      localStorage.setItem("taskCompleted", "true");
+      localStorage.setItem("taskCompleted-Type Grind", "true");
+      localStorage.setItem("lastCompletedDate", new Date().toDateString());
+      window.location.href = "home";
+    }
+  });
 
   useEffect(() => {
     if (hasStarted && inputRef.current) {
@@ -75,7 +87,7 @@ export default function TypeGrind() {
       <p className="flex justify-center pt-8 font-urbanist font-medium">
         {progress} / 25 sentences completed
       </p>
-      {completed && (
+      {isCompleted && (
         <p className="flex justify-center pt-8 font-urbanist font-medium">
           Congratulations! You've completed the typing test.
         </p>

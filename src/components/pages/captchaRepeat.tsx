@@ -1,17 +1,19 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const RecaptchaV2Page = () => {
   const [counter, setCounter] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [tasksCompleted, setTasksCompleted] = useState(false);
+
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const onReCAPTCHAChange = (token: string | null) => {
     if (token) {
       const newCount = counter + 1;
       setCounter(newCount);
-      if (newCount >= 25) {
+      if (newCount >= 3) {
         setIsCompleted(true);
       } else {
         if (recaptchaRef.current) {
@@ -20,6 +22,16 @@ const RecaptchaV2Page = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (isCompleted) {
+      setTasksCompleted(true);
+      localStorage.setItem("taskCompleted", "true");
+      localStorage.setItem("taskCompleted-Captcha Repeater", "true");
+      localStorage.setItem("lastCompletedDate", new Date().toDateString());
+      window.location.href = "home";
+    }
+  });
 
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
@@ -37,7 +49,7 @@ const RecaptchaV2Page = () => {
         )}
       </div>
       <p className="flex justify-center pt-8 font-urbanist font-medium">
-        Challenge {counter + 1} of 25
+        Challenge {counter + 1} of 3
       </p>
     </div>
   );
