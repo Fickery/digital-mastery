@@ -12,10 +12,28 @@ type TaskCompletionStatus = {
 export default function Task() {
   const [taskCompletionStatus, setTaskCompletionStatus] =
     useState<TaskCompletionStatus>({});
+  const [daysDone, setDaysDone] = useState(0);
 
   useEffect(() => {
+    const savedDaysDone = localStorage.getItem("daysDone");
+    if (savedDaysDone) {
+      setDaysDone(parseInt(savedDaysDone));
+    }
+  }, []);
+
+  useEffect(() => {
+    const totalCompleted =
+      Object.values(taskCompletionStatus).filter(Boolean).length;
+
     if (totalCompleted === getTasksCount()) {
       alert("You have completed all the tasks for today!");
+
+      setDaysDone((prevDaysDone) => {
+        const newDaysDone = prevDaysDone + 1;
+        localStorage.setItem("daysDone", newDaysDone.toString());
+        return newDaysDone;
+      });
+
       confetti({
         startVelocity: 70,
         spread: 1000,
@@ -28,6 +46,12 @@ export default function Task() {
       });
     }
   }, [taskCompletionStatus]);
+
+  const resetDailyProgress = () => {
+    resetCompletedTasks();
+    setDaysDone(0);
+    localStorage.setItem("daysDone", "0");
+  };
 
   //dev tools ----------------
   const seeTaskCompletionStatus = () => {
@@ -86,9 +110,9 @@ export default function Task() {
           <FooterItem>{`${totalCompleted}/${getTasksCount()} TASKS COMPLETED`}</FooterItem>
         )}
         {totalCompleted <= 1 ? (
-          <FooterItem>{`${totalCompleted} DAY DONE`}</FooterItem>
+          <FooterItem>0 DAY DONE</FooterItem>
         ) : (
-          <FooterItem>{`${totalCompleted - 1} DAYS DONE`}</FooterItem>
+          <FooterItem>{`${daysDone} DAYS DONE`}</FooterItem>
         )}
         <FooterItem>
           <button
@@ -104,6 +128,14 @@ export default function Task() {
             onClick={seeTaskCompletionStatus}
           >
             See Task Completion Status
+          </button>
+        </FooterItem>
+        <FooterItem>
+          <button
+            className="opacity-50 hover:opacity-100"
+            onClick={resetDailyProgress}
+          >
+            Reset Daily Progress
           </button>
         </FooterItem>
       </FooterContainer>
