@@ -79,13 +79,13 @@ export default function TypeGrind() {
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="w-full rounded-lg border px-4 py-2"
+          className="w-3/4 border bg-background px-4 py-2 text-white"
           placeholder="Start typing..."
         />
         <Button onClick={nextSentence}>Next Sentence</Button>
       </div>
       <p className="flex justify-center pt-8 font-urbanist font-medium">
-        {progress} / 25 sentences completed
+        {progress} / 5 sentences completed
       </p>
       {isCompleted && (
         <p className="flex justify-center pt-8 font-urbanist font-medium">

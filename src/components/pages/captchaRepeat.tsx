@@ -13,7 +13,7 @@ const RecaptchaV2Page = () => {
     if (token) {
       const newCount = counter + 1;
       setCounter(newCount);
-      if (newCount >= 3) {
+      if (newCount === 3) {
         setIsCompleted(true);
       } else {
         if (recaptchaRef.current) {
@@ -49,7 +49,7 @@ const RecaptchaV2Page = () => {
         )}
       </div>
       <p className="flex justify-center pt-8 font-urbanist font-medium">
-        Challenge {counter + 1} of 3
+        Challenge {counter} of 3
       </p>
     </div>
   );
