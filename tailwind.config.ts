@@ -50,7 +50,6 @@ module.exports = {
         },
         card: {
           DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
         },
       },
       borderRadius: {
@@ -59,6 +58,10 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        blinkingBg: {
+          "0.2%, 1%": { backgroundColor: "#ef4444" },
+          "0.1%": { backgroundColor: "#fee2e2" },
+        },
         "accordion-down": {
           from: { height: 0 },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -71,6 +74,7 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        blinkingBg: "blinkingBg ease-in-out infinite alternate",
       },
     },
   },

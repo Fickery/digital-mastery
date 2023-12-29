@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "../ui/button";
 
@@ -47,18 +47,13 @@ const VideoPlayer = () => {
     window.location.href = "home";
   };
 
-  // useEffect(() => {
-
-  // })
-
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
       <div className="mx-auto h-[28rem] w-[50rem] border-[0.5px] border-[#828282] bg-background text-center">
         <ReactPlayer
           ref={playerRef}
           title=""
-          // className="absolute left-0 top-0"
-          url=""
+          url="https://www.youtube.com/watch?v=i0-Vi_WTZtM&t=92s"
           width="100%"
           height="100%"
           onDuration={handleDuration}

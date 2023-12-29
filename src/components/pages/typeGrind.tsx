@@ -1,97 +1,94 @@
 "use client";
-"use client";
-import { useState, useRef, useEffect } from "react";
-import { Button } from "../ui/button";
-import { faker } from "@faker-js/faker";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { NextPage } from "next";
+import WordSet from "./typeTest/wordSet";
+import wordList from "../../../wordlist.json";
 
-export default function TypeGrind() {
-  const [hasStarted, setHasStarted] = useState(false);
-  const [text, setText] = useState("");
-  const [words, setWords] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [tasksCompleted, setTasksCompleted] = useState(false);
+const Home: NextPage = () => {
+  const [counter, setCounter] = useState(0);
+  const [typedWordList, setTypedWordList] = useState<string[]>([""]);
+  const [activeWordIndex, setActiveWordIndex] = useState(0);
+  const [wordSet, setWordSet] = useState<string[]>([]);
 
-  const inputRef = useRef(null);
+  const wordRef = useCallback((node: HTMLDivElement) => {
+    if (node === null) return;
+    node.scrollIntoView({
+      block: "center",
+    });
+  }, []);
 
-  const genRandomWords = () => {
-    const randomWords = faker.random.words({ min: 12, max: 15 });
-    setWords(randomWords);
-    setText("");
+  const main = useRef<HTMLInputElement>(null);
+
+  const handleKeyPress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const typed = event.target.value;
+    setTypedWordList(typed.split(" "));
   };
 
-  const startType = () => {
-    genRandomWords();
-    setHasStarted(true);
-    setProgress(0);
-    setIsCompleted(false);
+  const reset = () => {
+    setTypedWordList([""]);
+    setActiveWordIndex(0);
+    main.current ? (main.current.value = "") : null;
+    main.current?.focus();
   };
 
-  const nextSentence = () => {
-    if (text.trim() === words) {
-      genRandomWords();
-      setProgress((prevProg) => {
-        if (prevProg === 1) {
-          setIsCompleted(true);
-          return prevProg;
-        }
-        return prevProg + 1;
-      });
-    }
+  const newSet = () => {
+    const wordSetSize = 3;
+    setWordSet(wordList.sort(() => Math.random() - 0.5).slice(0, wordSetSize));
+    reset();
   };
 
   useEffect(() => {
-    if (isCompleted) {
-      setTasksCompleted(true);
-      localStorage.setItem("taskCompleted", "true");
-      localStorage.setItem("taskCompleted-Type Grind", "true");
-      localStorage.setItem("lastCompletedDate", new Date().toDateString());
-      window.location.href = "home";
-    }
-  });
+    if (typedWordList.length > wordSet.length) reset();
+    else setActiveWordIndex(typedWordList.length - 1);
+  }, [typedWordList, wordSet]);
+
+  useEffect(() => newSet(), []);
 
   useEffect(() => {
-    if (hasStarted && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [hasStarted]);
-
-  if (!hasStarted)
-    return (
-      <div className="w-full px-[325px] font-urbanist font-bold text-white">
-        <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background">
-          <Button onClick={startType}>Start</Button>
-        </div>
-        <p className="flex justify-center pt-8 font-urbanist font-medium">
-          Press START to begin
-        </p>
-      </div>
+    const isCompletedCorrectly = wordSet.every(
+      (word, index) => word === typedWordList[index],
     );
+
+    if (isCompletedCorrectly) {
+      newSet();
+    }
+
+    if (isCompletedCorrectly) {
+      setCounter(counter + 1);
+      console.log("completed");
+    }
+  }, [typedWordList, wordSet]);
 
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
-      <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-around border-[0.5px] border-[#828282] bg-background">
-        <p className="px-12 text-center text-xl font-medium tracking-wider text-[#5F5F5F]">
-          {words}
-        </p>
-        <input
-          ref={inputRef}
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="w-3/4 border bg-background px-4 py-2 text-white"
-          placeholder="Start typing..."
-        />
-        <Button onClick={nextSentence}>Next Sentence</Button>
+      <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background">
+        <div
+          className="flex h-full flex-col justify-center focus:outline-none"
+          onFocus={() => main.current?.focus()}
+          tabIndex={1}
+        >
+          <div title="typing test">
+            <input
+              className="absolute z-[-1] opacity-0"
+              ref={main}
+              onChange={handleKeyPress}
+              autoFocus
+              autoCapitalize="off"
+            ></input>
+            <WordSet
+              wordList={wordSet.slice(0, activeWordIndex + 50)}
+              typedWordList={typedWordList}
+              activeWordIndex={activeWordIndex}
+              wordRef={wordRef}
+            />
+          </div>
+        </div>
       </div>
       <p className="flex justify-center pt-8 font-urbanist font-medium">
-        {progress} / 5 sentences completed
+        {counter} / 20
       </p>
-      {isCompleted && (
-        <p className="flex justify-center pt-8 font-urbanist font-medium">
-          Congratulations! You've completed the typing test.
-        </p>
-      )}
     </div>
   );
-}
+};
+
+export default Home;

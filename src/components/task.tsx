@@ -40,7 +40,6 @@ export default function Task() {
         ticks: 120,
         zIndex: 0,
         colors: ["#36454F", "#A9A9A9", "#36454F", "#D3D3D3", "#818589"],
-
         particleCount: 250,
         origin: { y: 0.5 },
       });
