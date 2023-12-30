@@ -5,8 +5,8 @@ interface Target {
   id: number;
   x: number;
   y: number;
-  width: number; // New property for width
-  height: number; // New property for height
+  width: number;
+  height: number;
   isClicked: boolean;
 }
 
@@ -14,9 +14,20 @@ const PointAndClickGame = () => {
   const [score, setScore] = useState<number>(0);
   const [targets, setTargets] = useState<Target[]>([]);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [tasksCompleted, setTasksCompleted] = useState(false);
 
   const gameAreaWidth = 700;
   const gameAreaHeight = 358;
+
+  useEffect(() => {
+    if (score >= 5) {
+      setTasksCompleted(true);
+      localStorage.setItem("taskCompleted", "true");
+      localStorage.setItem("taskCompleted-Point And Click", "true");
+      localStorage.setItem("lastCompletedDate", new Date().toDateString());
+      window.location.href = "home";
+    }
+  });
 
   useEffect(() => {
     const refreshTargets = () => generateTargets();
@@ -34,8 +45,8 @@ const PointAndClickGame = () => {
       id: i,
       x: Math.floor(Math.random() * gameAreaWidth),
       y: Math.floor(Math.random() * gameAreaHeight),
-      width: Math.random() * 20 + 5, // Random width between 5px and 25px
-      height: Math.random() * 20 + 5, // Random height between 5px and 25px
+      width: Math.random() * 20 + 5,
+      height: Math.random() * 20 + 5,
       isClicked: false,
     }));
     setTargets(newTargets);
@@ -51,7 +62,7 @@ const PointAndClickGame = () => {
   };
 
   const handleStartGame = () => setGameStarted(true);
-  const isComplete = score >= 500;
+  const isComplete = score >= 5;
 
   return (
     <div className="w-full px-[325px] font-urbanist font-bold text-white">
@@ -78,7 +89,7 @@ const PointAndClickGame = () => {
           )}
       </div>
       <p className="flex justify-center pt-8 font-urbanist font-medium">
-        Score: {score}
+        {score} / 5
       </p>
     </div>
   );

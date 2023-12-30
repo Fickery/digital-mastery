@@ -1,7 +1,8 @@
 "use client";
-import Link from "next/link";
 import { FooterContainer, FooterItem } from "@/components/footer";
 import { getTaskRoute, getTasksCount, tasks } from "@/lib/tasks";
+import confetti from "canvas-confetti";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type TaskCompletionStatus = {
@@ -11,7 +12,47 @@ type TaskCompletionStatus = {
 export default function Task() {
   const [taskCompletionStatus, setTaskCompletionStatus] =
     useState<TaskCompletionStatus>({});
+  const [daysDone, setDaysDone] = useState(0);
 
+  useEffect(() => {
+    const savedDaysDone = localStorage.getItem("daysDone");
+    if (savedDaysDone) {
+      setDaysDone(parseInt(savedDaysDone));
+    }
+  }, []);
+
+  useEffect(() => {
+    const totalCompleted =
+      Object.values(taskCompletionStatus).filter(Boolean).length;
+
+    if (totalCompleted === getTasksCount()) {
+      alert("You have completed all the tasks for today!");
+
+      setDaysDone((prevDaysDone) => {
+        const newDaysDone = prevDaysDone + 1;
+        localStorage.setItem("daysDone", newDaysDone.toString());
+        return newDaysDone;
+      });
+
+      confetti({
+        startVelocity: 70,
+        spread: 1000,
+        ticks: 120,
+        zIndex: 0,
+        colors: ["#36454F", "#A9A9A9", "#36454F", "#D3D3D3", "#818589"],
+        particleCount: 250,
+        origin: { y: 0.5 },
+      });
+    }
+  }, [taskCompletionStatus]);
+
+  const resetDailyProgress = () => {
+    resetCompletedTasks();
+    setDaysDone(0);
+    localStorage.setItem("daysDone", "0");
+  };
+
+  //dev tools ----------------
   const seeTaskCompletionStatus = () => {
     console.log(taskCompletionStatus);
   };
@@ -62,14 +103,38 @@ export default function Task() {
       })}
 
       <FooterContainer>
-        <FooterItem>{`${totalCompleted}/${getTasksCount()} TASKS COMPLETED`}</FooterItem>
-        <FooterItem>0 DAYS DONE</FooterItem>
+        {totalCompleted <= 1 ? (
+          <FooterItem>{`${totalCompleted}/${getTasksCount()} TASK COMPLETED`}</FooterItem>
+        ) : (
+          <FooterItem>{`${totalCompleted}/${getTasksCount()} TASKS COMPLETED`}</FooterItem>
+        )}
+        {totalCompleted <= 1 ? (
+          <FooterItem>0 DAY DONE</FooterItem>
+        ) : (
+          <FooterItem>{`${daysDone} DAYS DONE`}</FooterItem>
+        )}
         <FooterItem>
-          <button onClick={resetCompletedTasks}>Reset Tasks Completed</button>
+          <button
+            className="opacity-50 hover:opacity-100"
+            onClick={resetCompletedTasks}
+          >
+            Reset Tasks Completed
+          </button>
         </FooterItem>
         <FooterItem>
-          <button onClick={seeTaskCompletionStatus}>
+          <button
+            className="opacity-50 hover:opacity-100"
+            onClick={seeTaskCompletionStatus}
+          >
             See Task Completion Status
+          </button>
+        </FooterItem>
+        <FooterItem>
+          <button
+            className="opacity-50 hover:opacity-100"
+            onClick={resetDailyProgress}
+          >
+            Reset Daily Progress
           </button>
         </FooterItem>
       </FooterContainer>

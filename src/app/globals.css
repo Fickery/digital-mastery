@@ -26,6 +26,12 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+
+    --waiting: #383838;
+    --active: #8d8d8d;
+    --passive: #b18bcf;
+    --positive: #ffffff;
+    --negative: #ff2727;
   }
 
   .dark {

@@ -1,5 +1,5 @@
 import PageCtrl from "@/components/ui/pageCtrl";
-import VideoPlayer from "@/components/pages/videoPlayer";
+import VideoPlayer from "@/components/pages/adPlayer";
 import React from "react";
 
 export default function Page() {
