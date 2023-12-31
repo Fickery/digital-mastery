@@ -83,8 +83,8 @@ const Home: NextPage = () => {
   });
 
   return (
-    <div className="w-full px-[325px] font-urbanist font-bold text-white">
-      <div className="mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background">
+    <div className="w-full font-urbanist font-bold text-white sm:px-[225px] xl:px-[325px]">
+      <div className="mx-auto flex h-[28rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background sm:w-full xl:w-[50rem]">
         {!start && <button onClick={handleStart}>Start Game</button>}
         {start && (
           <div

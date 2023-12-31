@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto_Condensed } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
+import Loading from "./loading";
 
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"] });
 
@@ -17,12 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html
-      suppressHydrationWarning
+      suppressHydrationWarning={true}
       lang="en"
       className={robotoCondensed.className}
     >
       <body>
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+        <Suspense fallback={<Loading />}>{children}</Suspense>
       </body>
     </html>
   );

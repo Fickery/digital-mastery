@@ -26,45 +26,30 @@ export default function Task() {
       Object.values(taskCompletionStatus).filter(Boolean).length;
 
     if (totalCompleted === getTasksCount()) {
-      alert("You have completed all the tasks for today!");
+      const lastCompletedDate = localStorage.getItem("lastCompletedDate");
+      const currentDate = new Date().toDateString();
 
-      setDaysDone((prevDaysDone) => {
-        const newDaysDone = prevDaysDone + 1;
-        localStorage.setItem("daysDone", newDaysDone.toString());
-        return newDaysDone;
-      });
+      if (lastCompletedDate !== currentDate) {
+        alert("You have completed all the tasks for today!");
+        confetti({
+          startVelocity: 70,
+          spread: 1000,
+          ticks: 120,
+          zIndex: 0,
+          colors: ["#36454F", "#A9A9A9", "#36454F", "#D3D3D3", "#818589"],
+          particleCount: 250,
+          origin: { y: 0.5 },
+        });
 
-      confetti({
-        startVelocity: 70,
-        spread: 1000,
-        ticks: 120,
-        zIndex: 0,
-        colors: ["#36454F", "#A9A9A9", "#36454F", "#D3D3D3", "#818589"],
-        particleCount: 250,
-        origin: { y: 0.5 },
-      });
+        setDaysDone((prevDaysDone) => {
+          const newDaysDone = prevDaysDone + 1;
+          localStorage.setItem("daysDone", newDaysDone.toString());
+          localStorage.setItem("lastCompletedDate", currentDate); // Save the completion date
+          return newDaysDone;
+        });
+      }
     }
   }, [taskCompletionStatus]);
-
-  const resetDailyProgress = () => {
-    resetCompletedTasks();
-    setDaysDone(0);
-    localStorage.setItem("daysDone", "0");
-  };
-
-  //dev tools ----------------
-  const seeTaskCompletionStatus = () => {
-    console.log(taskCompletionStatus);
-  };
-
-  const resetCompletedTasks = () => {
-    const resetStatus = tasks.reduce<TaskCompletionStatus>((acc, task) => {
-      acc[task.name] = false;
-      localStorage.setItem(`taskCompleted-${task.name}`, "false");
-      return acc;
-    }, {});
-    setTaskCompletionStatus(resetStatus);
-  };
 
   useEffect(() => {
     const storedCompletionStatus = tasks.reduce<TaskCompletionStatus>(
@@ -82,8 +67,27 @@ export default function Task() {
   const totalCompleted =
     Object.values(taskCompletionStatus).filter(Boolean).length;
 
+  //dev tools ----------------
+  const resetDailyProgress = () => {
+    resetCompletedTasks();
+    setDaysDone(0);
+    localStorage.setItem("daysDone", "0");
+  };
+
+  const seeTaskCompletionStatus = () => {
+    console.log(taskCompletionStatus);
+  };
+
+  const resetCompletedTasks = () => {
+    const resetStatus = tasks.reduce<TaskCompletionStatus>((acc, task) => {
+      acc[task.name] = false;
+      localStorage.setItem(`taskCompleted-${task.name}`, "false");
+      return acc;
+    }, {});
+    setTaskCompletionStatus(resetStatus);
+  };
   return (
-    <div className="flex h-screen w-full text-white">
+    <div className="flex h-screen w-full flex-col justify-center gap-6 text-2xl text-white sm:flex-row sm:gap-0 sm:text-base">
       {tasks.map(({ name, index }) => {
         const isCompleted = taskCompletionStatus[name];
         return (

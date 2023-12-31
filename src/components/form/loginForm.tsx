@@ -53,6 +53,7 @@ export default function Login() {
   };
 
   const handleExternalSignIn = async (provider: string) => {
+    console.log("provider", provider);
     try {
       const signInData = await signIn(provider, {
         redirect: false,
@@ -65,7 +66,6 @@ export default function Login() {
           variant: "destructive",
         });
       } else {
-        // Optionally, you can redirect or perform additional actions
         router.push("/home");
       }
     } catch (error) {

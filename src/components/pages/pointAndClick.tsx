@@ -13,7 +13,7 @@ interface Target {
 const PointAndClickGame = () => {
   const [score, setScore] = useState<number>(0);
   const [targets, setTargets] = useState<Target[]>([]);
-  const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [start, setStart] = useState<boolean>(false);
   const [tasksCompleted, setTasksCompleted] = useState(false);
 
   const gameAreaWidth = 700;
@@ -32,13 +32,13 @@ const PointAndClickGame = () => {
   useEffect(() => {
     const refreshTargets = () => generateTargets();
 
-    if (gameStarted) {
+    if (start) {
       const intervalId = setInterval(refreshTargets, 3000);
       return () => clearInterval(intervalId);
     } else {
       generateTargets();
     }
-  }, [gameStarted]);
+  }, [start]);
 
   const generateTargets = () => {
     const newTargets: Target[] = Array.from({ length: 10 }, (_, i) => ({
@@ -61,14 +61,13 @@ const PointAndClickGame = () => {
     setScore((prevScore) => prevScore + 1);
   };
 
-  const handleStartGame = () => setGameStarted(true);
-  const isComplete = score >= 5;
+  const handleStartGame = () => setStart(true);
 
   return (
-    <div className="w-full px-[325px] font-urbanist font-bold text-white">
-      <div className="relative mx-auto flex h-[28rem] w-[50rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background">
-        {!gameStarted && <button onClick={handleStartGame}>Start Game</button>}
-        {gameStarted &&
+    <div className="w-full font-urbanist font-bold text-white sm:px-[50px] xl:px-[325px]">
+      <div className="relative mx-auto flex h-[28rem] flex-col items-center justify-center border-[0.5px] border-[#828282] bg-background sm:w-full xl:w-[50rem]">
+        {!start && <button onClick={handleStartGame}>Start Game</button>}
+        {start &&
           targets.map(
             (target) =>
               !target.isClicked && (
